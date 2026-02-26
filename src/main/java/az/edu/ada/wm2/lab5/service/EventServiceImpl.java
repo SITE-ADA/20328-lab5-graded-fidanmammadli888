@@ -85,21 +85,14 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> getEventsByTag(String tag) {
-        if (tag == null || tag.trim().isEmpty()) {
+        if (tag == null) {
             return List.of();
         }
-        String normalized = tag.trim().toLowerCase();
 
-        return eventRepository.findAll()
-                .stream()
-                .filter(e -> e != null && e.getTags() != null)
-                .filter(e -> e.getTags().stream()
-                        .filter(t -> t != null && !t.trim().isEmpty())
-                        .map(t -> t.trim().toLowerCase())
-                        .anyMatch(t -> t.equals(normalized)))
+        return eventRepository.findAll().stream()
+                .filter(e -> e != null && e.getTags() != null && e.getTags().contains(tag))
                 .collect(Collectors.toList());
     }
-
     @Override
     public List<Event> getUpcomingEvents() {
         LocalDateTime now = LocalDateTime.now();
